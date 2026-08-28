@@ -1,0 +1,10 @@
+# Compiled Java
+*.class
+bin/
+out/
+
+# Editor / OS
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
