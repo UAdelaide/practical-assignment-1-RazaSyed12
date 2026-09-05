@@ -217,4 +217,77 @@ public class RegexEngine_Test {
 
     assertEquals(Arrays.asList("ready", "true", "true", "false"), result.output);
   }
+
+  @Test
+  public void normalModePrintsNoTable() throws Exception {
+    Session result = run(session("(ab)*|c+", "ab"));
+
+    assertEquals(Arrays.asList("ready", "true"), result.output);
+  }
+
+  @Test
+  public void verboseModePrintsTheTableBeforeReady() throws Exception {
+    Session result = run(session("a"), "-v");
+
+    assertEquals(
+        Arrays.asList(
+            "     epsilon  a   other",
+            ">q0           q1",
+            "*q1",
+            "",
+            "ready"),
+        result.output);
+  }
+
+  /** The verbose worked example from the assignment brief. */
+  @Test
+  public void verboseModeReportsAVerdictPerCharacter() throws Exception {
+    Session result = run(session("(ab)*|c+", "abc", "ccc"), "-v");
+
+    // Everything from "ready" onwards; the table itself is checked above and in
+    // EpsilonNfa_Test.
+    List<String> verdicts = result.output.subList(result.output.indexOf("ready") + 1,
+        result.output.size());
+
+    assertEquals(
+        Arrays.asList(
+            // "abc": start, then a, b, c
+            "true", "false", "true", "false",
+            // "ccc": start, then c, c, c
+            "true", "true", "true", "true"),
+        verdicts);
+  }
+
+  @Test
+  public void verboseModeReportsOnlyTheStartVerdictForABlankLine() throws Exception {
+    Session result = run(session("(ab)*|c+", ""), "-v");
+
+    assertEquals(
+        "an empty line consumes no characters, so there is one verdict",
+        "true",
+        result.output.get(result.output.size() - 1));
+  }
+
+  @Test
+  public void verboseModesLastVerdictMatchesNormalMode() throws Exception {
+    for (String input : new String[] {"", "ab", "abab", "abc", "ccc", "a"}) {
+      Session plain = run(session("(ab)*|c+", input));
+      Session verbose = run(session("(ab)*|c+", input), "-v");
+
+      assertEquals(
+          "the final verbose verdict for <" + input + "> must agree with normal mode",
+          plain.output.get(plain.output.size() - 1),
+          verbose.output.get(verbose.output.size() - 1));
+    }
+  }
+
+  @Test
+  public void verboseModeStillExitsWithStatusOneOnAnInvalidExpression()
+      throws Exception {
+    Session result = run(session("a(b", "ab"), "-v");
+
+    assertEquals(1, result.status);
+    assertEquals("no table for a machine that was never built", Arrays.asList(),
+        result.output);
+  }
 }
