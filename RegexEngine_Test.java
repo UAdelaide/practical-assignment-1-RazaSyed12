@@ -177,6 +177,20 @@ public class RegexEngine_Test {
         result.output);
   }
 
+  /**
+   * Piping the expression from PowerShell is what surfaced this: it prepends
+   * a UTF-8 byte order mark to whatever it sends into a native process, which
+   * would otherwise be read as an illegal first character of the expression.
+   *
+   * @throws Exception if the expression cannot be parsed
+   */
+  @Test
+  public void stripsALeadingByteOrderMarkFromTheExpression() throws Exception {
+    Session result = run("\uFEFF(ab)*|c+\nabc\nccc\n");
+
+    assertEquals(Arrays.asList("ready", "false", "true"), result.output);
+  }
+
   @Test
   public void noInputStringsAtAllIsACleanExit() throws Exception {
     Session result = run("abc\n");

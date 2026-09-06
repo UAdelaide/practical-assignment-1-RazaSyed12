@@ -72,7 +72,7 @@ public final class RegexEngine {
     try {
       // readLine returns null at end of input, which parse() reports as a
       // missing expression rather than throwing NullPointerException.
-      machine = EpsilonNfa.build(RegexParser.parse(reader.readLine()));
+      machine = EpsilonNfa.build(RegexParser.parse(stripLeadingBom(reader.readLine())));
     } catch (RegexSyntaxException invalid) {
       errors.println("error: " + invalid.getMessage());
       errors.flush();
@@ -160,5 +160,30 @@ public final class RegexEngine {
       }
     }
     return false;
+  }
+
+  /**
+   * Marks a byte stream as UTF-8, sometimes written by a shell at the very
+   * start of what it pipes into a program's standard input.
+   */
+  private static final char BYTE_ORDER_MARK = '\uFEFF';
+
+  /**
+   * Removes a leading UTF-8 byte order mark, if present.
+   *
+   * <p>The mark is invisible in a terminal, but decodes as a real character.
+   * Without stripping it, a piped expression would have it read as the first
+   * character and rejected as illegal.
+   *
+   * @param line the first line read from standard input, or {@code null} at
+   *     end of input
+   * @return the line with a leading byte order mark removed, or {@code null}
+   *     unchanged
+   */
+  private static String stripLeadingBom(String line) {
+    if (line != null && !line.isEmpty() && line.charAt(0) == BYTE_ORDER_MARK) {
+      return line.substring(1);
+    }
+    return line;
   }
 }
