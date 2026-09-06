@@ -239,33 +239,62 @@ public class RegexEngine_Test {
         result.output);
   }
 
-  /** The verbose worked example from the assignment brief. */
+  /**
+   * The verbose worked example from the assignment brief, as clarified by the
+   * course announcement of 5 September: each character is printed as well as
+   * the verdicts, interleaved between them.
+   */
   @Test
-  public void verboseModeReportsAVerdictPerCharacter() throws Exception {
+  public void verboseModeInterleavesCharactersWithVerdicts() throws Exception {
     Session result = run(session("(ab)*|c+", "abc", "ccc"), "-v");
 
     // Everything from "ready" onwards; the table itself is checked above and in
     // EpsilonNfa_Test.
-    List<String> verdicts = result.output.subList(result.output.indexOf("ready") + 1,
+    List<String> reported = result.output.subList(result.output.indexOf("ready") + 1,
         result.output.size());
 
     assertEquals(
         Arrays.asList(
-            // "abc": start, then a, b, c
-            "true", "false", "true", "false",
-            // "ccc": start, then c, c, c
-            "true", "true", "true", "true"),
-        verdicts);
+            // "abc"
+            "true", "a", "false", "b", "true", "c", "false",
+            // "ccc"
+            "true", "c", "true", "c", "true", "c", "true"),
+        reported);
+  }
+
+  @Test
+  public void verboseModeProducesTwoLinesPerCharacterPlusOne() throws Exception {
+    Session result = run(session("a*", "aaaa"), "-v");
+
+    List<String> reported = result.output.subList(result.output.indexOf("ready") + 1,
+        result.output.size());
+
+    assertEquals("2n + 1 lines for an n character string", 9, reported.size());
   }
 
   @Test
   public void verboseModeReportsOnlyTheStartVerdictForABlankLine() throws Exception {
     Session result = run(session("(ab)*|c+", ""), "-v");
 
+    List<String> reported = result.output.subList(result.output.indexOf("ready") + 1,
+        result.output.size());
+
     assertEquals(
-        "an empty line consumes no characters, so there is one verdict",
-        "true",
-        result.output.get(result.output.size() - 1));
+        "an empty line consumes no characters, so there is one verdict and no"
+            + " characters",
+        Arrays.asList("true"),
+        reported);
+  }
+
+  @Test
+  public void verboseModePrintsSpaceAndTabCharactersItReads() throws Exception {
+    Session result = run(session("a b", "a b"), "-v");
+
+    List<String> reported = result.output.subList(result.output.indexOf("ready") + 1,
+        result.output.size());
+
+    assertEquals(
+        Arrays.asList("false", "a", "false", " ", "false", "b", "true"), reported);
   }
 
   @Test

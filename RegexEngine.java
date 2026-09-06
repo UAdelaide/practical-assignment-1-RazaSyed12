@@ -116,25 +116,33 @@ public final class RegexEngine {
   }
 
   /**
-   * Reports the machine's verdict as each character of a line is consumed.
+   * Reports the machine's progress as each character of a line is consumed.
    *
-   * <p>The first verdict is printed before any character is read, which is what
-   * reports an expression that matches the empty string as {@code true} on a
-   * blank line.
+   * <p>Output alternates: a verdict, then the character about to be read, then
+   * the verdict after reading it, and so on. A line of {@code n} characters
+   * therefore produces {@code 2n + 1} lines.
+   *
+   * <p>The first verdict is printed before any character is read, so it says
+   * whether the start state accepts -- which is what reports an expression
+   * matching the empty string as {@code true} on a blank line. The last verdict
+   * is for the whole line, and matches what normal mode would print.
    *
    * @param simulator the machine to step, reset before use
    * @param line the input string being read
-   * @param output where the verdicts are written
+   * @param output where the verdicts and characters are written
    */
   private static void reportWhileReading(
       NfaSimulator simulator, String line, PrintStream output) {
     simulator.reset();
     output.println(simulator.isAccepting());
+    output.flush();
     for (int index = 0; index < line.length(); index++) {
-      simulator.consume(line.charAt(index));
+      char symbol = line.charAt(index);
+      output.println(symbol);
+      simulator.consume(symbol);
       output.println(simulator.isAccepting());
       // Flushed per character, since verbose mode exists to be watched as the
-      // input is typed.
+      // input is read.
       output.flush();
     }
   }
