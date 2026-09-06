@@ -34,8 +34,9 @@ public class RegexSyntaxException extends Exception {
   }
 
   /**
-   * @return the zero-based offset of the fault, or -1 if it has no single
-   *     location
+   * Returns where in the expression the fault was found.
+   *
+   * @return the zero-based offset, or -1 if the fault has no single location
    */
   public int getPosition() {
     return position;

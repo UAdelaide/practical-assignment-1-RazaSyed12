@@ -97,7 +97,11 @@ public class RegexParser_Test {
     assertEquals("Concat(Lit(A),Lit(1),Lit( ),Lit(z))", shapeOf("A1 z"));
   }
 
-  /** The worked example from the assignment brief. */
+  /**
+   * The worked example from the assignment brief.
+   *
+   * @throws Exception if the expression cannot be parsed
+   */
   @Test
   public void bracketedExampleFromTheBrief() throws Exception {
     assertEquals(

@@ -61,7 +61,9 @@ public final class EpsilonNfa implements NfaBuilder {
   }
 
   /**
-   * @return every state, in the order they were created
+   * Returns every state in the machine.
+   *
+   * @return the states, in the order they were created
    */
   public List<State> getStates() {
     return Collections.unmodifiableList(states);

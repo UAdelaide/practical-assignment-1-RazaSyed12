@@ -86,6 +86,8 @@ public class State {
   }
 
   /**
+   * Returns this state's epsilon edges.
+   *
    * @return the states reachable from here without consuming input
    */
   public Set<State> getEpsilonTransitions() {
@@ -93,6 +95,8 @@ public class State {
   }
 
   /**
+   * Returns the alphabet this state responds to.
+   *
    * @return every symbol this state has an outgoing edge for
    */
   public Set<Character> outgoingSymbols() {

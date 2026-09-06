@@ -101,7 +101,11 @@ public class RegexEngine_Test {
     assertEquals("", result.errors);
   }
 
-  /** The worked example from the assignment brief. */
+  /**
+   * The worked example from the assignment brief.
+   *
+   * @throws Exception if the expression cannot be parsed
+   */
   @Test
   public void exampleFromTheBrief() throws Exception {
     Session result = run(session("(ab)*|c+", "abc", "ccc"));
@@ -243,6 +247,8 @@ public class RegexEngine_Test {
    * The verbose worked example from the assignment brief, as clarified by the
    * course announcement of 5 September: each character is printed as well as
    * the verdicts, interleaved between them.
+   *
+   * @throws Exception if the expression cannot be parsed
    */
   @Test
   public void verboseModeInterleavesCharactersWithVerdicts() throws Exception {

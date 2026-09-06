@@ -148,6 +148,8 @@ public final class RegexEngine {
   }
 
   /**
+   * Looks for the verbose flag among the command line arguments.
+   *
    * @param args command line arguments
    * @return whether verbose output was requested
    */

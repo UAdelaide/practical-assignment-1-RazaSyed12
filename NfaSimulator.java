@@ -58,6 +58,8 @@ public final class NfaSimulator {
   }
 
   /**
+   * Reports whether the machine currently sits in its accepting state.
+   *
    * @return whether the input read so far is an exact match
    */
   public boolean isAccepting() {
@@ -65,14 +67,17 @@ public final class NfaSimulator {
   }
 
   /**
-   * @return whether the machine has run out of live states and can no longer
-   *     match whatever follows
+   * Reports whether the machine has run out of live states.
+   *
+   * @return whether no state survives, so nothing that follows can match
    */
   public boolean isDead() {
     return current.isEmpty();
   }
 
   /**
+   * Returns the machine's active states.
+   *
    * @return the states the machine could currently be in
    */
   public Set<State> getCurrentStates() {

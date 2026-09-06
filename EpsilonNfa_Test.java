@@ -108,7 +108,11 @@ public class EpsilonNfa_Test {
         machineFor("a").transitionTable());
   }
 
-  /** Locks the table against the hand-traced machine. */
+  /**
+   * Locks the table against the hand-traced machine.
+   *
+   * @throws Exception if the expression cannot be parsed
+   */
   @Test
   public void tableForTheBriefsExample() throws Exception {
     assertEquals(
